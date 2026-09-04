@@ -1,40 +1,31 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartMathSolver | حل هوشمند ریاضی</title>
-    <style>
-        body { font-family: 'Tahoma', sans-serif; background-color: #f0f2f5; text-align: center; padding: 20px; }
-        .container { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 500px; margin: auto; }
-        input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
-        button { background-color: #6c5ce7; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; }
-        #result { margin-top: 20px; font-weight: bold; color: #2d3436; }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h1>SmartMathSolver 🧠</h1>
-    <p>سوال ریاضی‌ت رو اینجا بنویس، شاید بتونم کمکت کنم!</p>
-    <input type="text" id="mathInput" placeholder="مثلاً: 5 + 5">
-    <br>
-    <button onclick="solve()">حل کن!</button>
-    <div id="result"></div>
-</div>
-
 <script>
     function solve() {
         let input = document.getElementById('mathInput').value;
         let resultDiv = document.getElementById('result');
+
+        // این "مغزِ متفکرِ" بومیِ ماست که کم‌کم قراره بزرگترش کنیم
+        const brainEngine = (expression) => {
+            // مرحله اول: پالایش (سخت‌گیری روی ورودی برای امنیت)
+            // فقط اعداد و عملگرهای ریاضی رو قبول می‌کنیم
+            const clean = expression.replace(/[^0-9+\-*/().]/g, '');
+            
+            // مرحله دوم: محاسبه (هسته منطقی)
+            // ما اینجا داریم با ساختار "Function" یک مفسرِ بومی می‌سازیم
+            return new Function(`return ${clean}`)();
+        };
+
         if(input) {
-            resultDiv.innerText = "ارباب، دارم رویِ '" + input + "' فکر می‌کنم... فعلاً اینو داشته باش: جواب هنوز در حالِ پردازشه!";
+            try {
+                // شروع پردازش هوش مصنوعی
+                let answer = brainEngine(input);
+                resultDiv.innerHTML = `ارباب، هوش مصنوعیِ بومیِ شما به این نتیجه رسید: <b>${answer}</b>`;
+            } catch(err) {
+                resultDiv.innerText = "ارباب، عبارتت کمی عجیبه! انگار هنوز در سطحِ درکِ هوشِ مصنوعیِ ما نیست.";
+            }
         } else {
-            resultDiv.innerText = "خب یه چیزی بنویس که حلش کنم دیگه!";
+            resultDiv.innerText = "خب خالی که نمیشه! یه معادله‌ای، چیزی وارد کن.";
         }
     }
 </script>
 
-</body>
-</html>
 
