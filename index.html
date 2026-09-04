@@ -3,216 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartMathSolver | هوش ریاضی بومی</title>
+    <title>SmartMathSolver | حل‌کننده هوشمند</title>
     <style>
         :root {
-            --primary-color: #8e44ad;
-            --secondary-color: #2c3e50;
-            --accent-color: #3498db;
-            --bg-color: #0f0c29;
-            --text-color: #ecf0f1;
-            --card-bg: rgba(255, 255, 255, 0.1);
+            --primary: #6c5ce7;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f8fafc;
         }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background: var(--card); padding: 2rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); width: 90%; max-width: 400px; text-align: center; }
+        h1 { margin-bottom: 1.5rem; color: var(--primary); }
+        input { width: 100%; padding: 15px; border-radius: 10px; border: none; margin-bottom: 15px; font-size: 1.2rem; background: #334155; color: white; box-sizing: border-box; }
+        
+        /* نوار ابزار جدید */
+        .math-tools { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 15px; }
+        .tool-btn { background: #475569; border: none; color: white; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .tool-btn:active { background: var(--primary); }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
-            color: var(--text-color);
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            animation: fadeInDown 1s ease;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            color: var(--accent-color);
-            text-shadow: 0 0 15px rgba(52, 152, 219, 0.5);
-            margin-bottom: 10px;
-        }
-
-        p.subtitle {
-            font-size: 1.1rem;
-            opacity: 0.8;
-        }
-
-        .main-container {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 500px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            animation: zoomIn 0.8s ease;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        input {
-            width: 100%;
-            padding: 15px;
-            border-radius: 12px;
-            border: none;
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
-            font-size: 1.2rem;
-            text-align: center;
-            box-sizing: border-box;
-            outline: none;
-            border: 2px solid transparent;
-            transition: 0.3s;
-        }
-
-        input:focus {
-            border-color: var(--accent-color);
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        button {
-            width: 100%;
-            padding: 15px;
-            border-radius: 12px;
-            border: none;
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-            color: white;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        button:active {
-            transform: scale(0.98);
-        }
-
-        button:hover {
-            box-shadow: 0 0 20px rgba(142, 68, 173, 0.6);
-        }
-
-        #result {
-            margin-top: 25px;
-            padding: 15px;
-            border-radius: 10px;
-            background: rgba(0, 0, 0, 0.2);
-            min-height: 50px;
-            text-align: center;
-            line-height: 1.6;
-            font-size: 1.1rem;
-        }
-
-        .features {
-            margin-top: 40px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            max-width: 500px;
-            width: 100%;
-        }
-
-        .feature-card {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-            font-size: 0.9rem;
-        }
-
-        footer {
-            margin-top: auto;
-            padding: 20px;
-            font-size: 0.8rem;
-            opacity: 0.6;
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes zoomIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
+        button.solve-btn { width: 100%; padding: 15px; border-radius: 10px; border: none; background: var(--primary); color: white; font-size: 1.1rem; cursor: pointer; }
+        #result { margin-top: 20px; font-size: 1.5rem; font-weight: bold; min-height: 2rem; }
+        .footer { margin-top: 30px; font-size: 0.8rem; opacity: 0.6; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>SmartMathSolver 🧠</h1>
-        <p class="subtitle">اولین موتور محاسباتی بومی و هوشمند</p>
-    </header>
-
-    <div class="main-container">
-        <div class="input-group">
-            <input type="text" id="mathInput" placeholder="مثلاً: 5 * (10 + 2)" autocomplete="off">
-        </div>
-        <button onclick="solve()">حل جادویی مسئله ✨</button>
-        
-        <div id="result">منتظر دستور شما هستم، ارباب...</div>
-    </div>
-
-    <div class="features">
-        <div class="feature-card">🚀 سرعت فوق‌العاده</div>
-        <div class="feature-card">🔐 امنیت بالا</div>
-        <div class="feature-card">🤖 هوش بومی</div>
-        <div class="feature-card">📱 مناسب موبایل</div>
-    </div>
-
-    <footer>
-        ساخته شده توسط TahaLogic | توسعه‌ی هوشمند
-    </footer>
-
-    <script>
-        function solve() {
-            const input = document.getElementById('mathInput').value;
-            const resultDiv = document.getElementById('result');
-
-            // موتور پردازشگر هوشمند
-            const brainEngine = (expression) => {
-                // پاکسازی ورودی برای جلوگیری از هرگونه حمله یا خطای منطقی
-                // فقط اعداد و عملگرهای استاندارد را اجازه می‌دهیم
-                const safeExpression = expression.replace(/[^0-9+\-*/(). ]/g, '');
-                
-                if (safeExpression.trim() === "") throw new Error("ورودی خالی است");
-
-                // استفاده از Function برای محاسبه (روش سریع و بومی)
-                return new Function(`return ${safeExpression}`)();
-            };
-
-            if (input.trim() !== "") {
-                try {
-                    const answer = brainEngine(input);
-                    resultDiv.innerHTML = `✅ پاسخ هوشمند: <br><span style="font-size: 1.5rem; color: #3498db;">${answer}</span>`;
-                    resultDiv.style.color = "white";
-                } catch (err) {
-                    resultDiv.innerHTML = "❌ خطا: عبارت وارد شده معتبر نیست. لطف<br>کنید از اعداد و عملگرها استفاده کنید.";
-                    resultDiv.style.color = "#e74c3c";
-                }
-            } else {
-                resultDiv.innerText = "لطفاً چیزی بنویسید ارباب!";
-                resultDiv.style.color = "#f1c40f";
-            }
-        }
-
-        // اجازه دادن به زدن دکمه Enter در کیبورد
-        document.getElementById('mathInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                solve();
-            }
-        });
-    </script>
-</body>
-    </html>
+<div class="container">
+    <h1>SmartMathSolver</h1>
     
+    <!-- نوار ابزار اضافه شده -->
+    <div class="math-tools">
+        <button class="tool-btn" onclick="insert('Math.sqrt(')">√</button>
+        <button class="tool-btn" onclick="insert('**')">^</button>
+        <button class="tool-btn" onclick="insert('(')">(</button>
+        <button class="tool-btn" onclick="insert(')')">)</button>
+        <button class="tool-btn" onclick="insert('Math.PI')">π</button>
+        <button class="tool-btn" onclick="insert('Math.sin(')">sin</button>
+        <button class="tool-btn" onclick="insert('Math.cos(')">cos</button>
+        <button class="tool-btn" onclick="insert('/')">÷</button>
+    </div>
+
+    <input type="text" id="mathInput" placeholder="عبارت ریاضی را وارد کنید..." autocomplete="off">
+    <button class="solve-btn" onclick="calculate()">محاسبه</button>
+    <div id="result"></div>
+    
+    <div class="footer">
+        Designed by TahaLogic | قدرت گرفته از موتور هوشمند
+    </div>
+</div>
+
+<script>
+    function insert(symbol) {
+        const input = document.getElementById('mathInput');
+        input.value += symbol;
+        input.focus();
+    }
+
+    function calculate() {
+        const expression = document.getElementById('mathInput').value;
+        const resultDiv = document.getElementById('result');
+        try {
+            // استفاده از brainEngine برای محاسبه
+            const result = new Function('return ' + expression)();
+            resultDiv.innerText = "جواب: " + result;
+        } catch (e) {
+            resultDiv.innerText = "خطا در فرمول!";
+        }
+    }
+</script>
+
+</body>
+</html>
