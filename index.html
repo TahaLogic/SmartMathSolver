@@ -1,31 +1,218 @@
-<script>
-    function solve() {
-        let input = document.getElementById('mathInput').value;
-        let resultDiv = document.getElementById('result');
-
-        // این "مغزِ متفکرِ" بومیِ ماست که کم‌کم قراره بزرگترش کنیم
-        const brainEngine = (expression) => {
-            // مرحله اول: پالایش (سخت‌گیری روی ورودی برای امنیت)
-            // فقط اعداد و عملگرهای ریاضی رو قبول می‌کنیم
-            const clean = expression.replace(/[^0-9+\-*/().]/g, '');
-            
-            // مرحله دوم: محاسبه (هسته منطقی)
-            // ما اینجا داریم با ساختار "Function" یک مفسرِ بومی می‌سازیم
-            return new Function(`return ${clean}`)();
-        };
-
-        if(input) {
-            try {
-                // شروع پردازش هوش مصنوعی
-                let answer = brainEngine(input);
-                resultDiv.innerHTML = `ارباب، هوش مصنوعیِ بومیِ شما به این نتیجه رسید: <b>${answer}</b>`;
-            } catch(err) {
-                resultDiv.innerText = "ارباب، عبارتت کمی عجیبه! انگار هنوز در سطحِ درکِ هوشِ مصنوعیِ ما نیست.";
-            }
-        } else {
-            resultDiv.innerText = "خب خالی که نمیشه! یه معادله‌ای، چیزی وارد کن.";
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartMathSolver | هوش ریاضی بومی</title>
+    <style>
+        :root {
+            --primary-color: #8e44ad;
+            --secondary-color: #2c3e50;
+            --accent-color: #3498db;
+            --bg-color: #0f0c29;
+            --text-color: #ecf0f1;
+            --card-bg: rgba(255, 255, 255, 0.1);
         }
-    }
-</script>
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            text-shadow: 0 0 15px rgba(52, 152, 219, 0.5);
+            margin-bottom: 10px;
+        }
+
+        p.subtitle {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        .main-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: zoomIn 0.8s ease;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 1.2rem;
+            text-align: center;
+            box-sizing: border-box;
+            outline: none;
+            border: 2px solid transparent;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button:hover {
+            box-shadow: 0 0 20px rgba(142, 68, 173, 0.6);
+        }
+
+        #result {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            min-height: 50px;
+            text-align: center;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .features {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>SmartMathSolver 🧠</h1>
+        <p class="subtitle">اولین موتور محاسباتی بومی و هوشمند</p>
+    </header>
+
+    <div class="main-container">
+        <div class="input-group">
+            <input type="text" id="mathInput" placeholder="مثلاً: 5 * (10 + 2)" autocomplete="off">
+        </div>
+        <button onclick="solve()">حل جادویی مسئله ✨</button>
+        
+        <div id="result">منتظر دستور شما هستم، ارباب...</div>
+    </div>
+
+    <div class="features">
+        <div class="feature-card">🚀 سرعت فوق‌العاده</div>
+        <div class="feature-card">🔐 امنیت بالا</div>
+        <div class="feature-card">🤖 هوش بومی</div>
+        <div class="feature-card">📱 مناسب موبایل</div>
+    </div>
+
+    <footer>
+        ساخته شده توسط TahaLogic | توسعه‌ی هوشمند
+    </footer>
+
+    <script>
+        function solve() {
+            const input = document.getElementById('mathInput').value;
+            const resultDiv = document.getElementById('result');
+
+            // موتور پردازشگر هوشمند
+            const brainEngine = (expression) => {
+                // پاکسازی ورودی برای جلوگیری از هرگونه حمله یا خطای منطقی
+                // فقط اعداد و عملگرهای استاندارد را اجازه می‌دهیم
+                const safeExpression = expression.replace(/[^0-9+\-*/(). ]/g, '');
+                
+                if (safeExpression.trim() === "") throw new Error("ورودی خالی است");
+
+                // استفاده از Function برای محاسبه (روش سریع و بومی)
+                return new Function(`return ${safeExpression}`)();
+            };
+
+            if (input.trim() !== "") {
+                try {
+                    const answer = brainEngine(input);
+                    resultDiv.innerHTML = `✅ پاسخ هوشمند: <br><span style="font-size: 1.5rem; color: #3498db;">${answer}</span>`;
+                    resultDiv.style.color = "white";
+                } catch (err) {
+                    resultDiv.innerHTML = "❌ خطا: عبارت وارد شده معتبر نیست. لطف<br>کنید از اعداد و عملگرها استفاده کنید.";
+                    resultDiv.style.color = "#e74c3c";
+                }
+            } else {
+                resultDiv.innerText = "لطفاً چیزی بنویسید ارباب!";
+                resultDiv.style.color = "#f1c40f";
+            }
+        }
+
+        // اجازه دادن به زدن دکمه Enter در کیبورد
+        document.getElementById('mathInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                solve();
+            }
+        });
+    </script>
+</body>
+    </html>
+    
