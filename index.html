@@ -2,61 +2,37 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>Smart Math Solver (Ultra Secure)</title>
+    <title>Smart Math Solver</title>
     <style>
-        body { font-family: Tahoma, sans-serif; padding: 20px; text-align: center; background-color: #f9f9f9; }
-        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        input { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; text-align: center; }
-        button { padding: 12px 25px; cursor: pointer; border: none; border-radius: 8px; background-color: #007bff; color: white; font-weight: bold; transition: 0.3s; }
-        button:hover { background-color: #0056b3; }
-        #status { color: red; margin: 10px 0; font-size: 0.85em; border: 1px solid #ffcccc; padding: 10px; display: none; background: #fff5f5; border-radius: 5px; }
-        #result { margin-top: 20px; padding: 15px; background: #eef; border-radius: 10px; text-align: right; white-space: pre-wrap; min-height: 50px; }
-        .security-note { font-size: 11px; color: #888; margin-bottom: 15px; }
+        body { font-family: Tahoma, sans-serif; padding: 20px; text-align: center; }
+        input { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; }
+        button { padding: 12px 25px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 8px; }
+        #status { color: red; margin: 10px 0; padding: 10px; display: none; background: #fff5f5; border: 1px solid red; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>حل‌کننده ریاضی</h1>
-    <p class="security-note">⚠️ هشدار: کلید API شما هیچ‌جا ذخیره نمی‌شود. با رفرش شدن صفحه، کلید پاک می‌شود.</p>
-
-    <!-- بخش ورود کلید (بدون ذخیره‌سازی) -->
     <input type="password" id="apiKeyInput" placeholder="کلید API را اینجا وارد کنید">
-    
-    <hr>
-
-    <!-- بخش ورود سوال -->
-    <input type="text" id="question" placeholder="سوال ریاضی را بنویسید...">
-    <button onclick="solveMath()">حل کردن سوال</button>
+    <input type="text" id="question" placeholder="سوال ریاضی...">
+    <button onclick="solveMath()">حل کن</button>
 
     <div id="status"></div>
-    <div id="result">جواب اینجا نمایش داده می‌شود...</div>
-</div>
+    <div id="result"></div>
 
 <script>
     async function solveMath() {
         const statusDiv = document.getElementById('status');
         const resultDiv = document.getElementById('result');
+        const apiKey = document.getElementById('apiKeyInput').value;
         const question = document.getElementById('question').value;
-        const apiKey = document.getElementById('apiKeyInput').value; // فقط از فیلد می‌خواند
 
-        // بررسی خالی نبودن
-        if (!apiKey) {
-            alert('ارباب! اول باید کلید API رو وارد کنید.');
-            return;
-        }
-        if (!question) {
-            alert('سوال رو بنویسید دیگه!');
-            return;
-        }
-
-        // آماده‌سازی برای نمایش
         statusDiv.style.display = 'none';
-        resultDiv.innerText = 'در حال پردازش با دقت بالا...';
-
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+        resultDiv.innerText = 'در حال ارتباط با سرور...';
 
         try {
+            // مدل رو به gemini-1.5-pro تغییر دادیم که مطمئن‌تره
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`;
+            
             const response = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -65,22 +41,20 @@
                 })
             });
 
-            const data = await response.json();
-
             if (!response.ok) {
-                // اگر کلید غلط بود یا مشکل داشت، اینجا میگه
-                throw new Error(data.error ? data.error.message : 'خطای ناشناخته');
+                const errorData = await response.json();
+                throw new Error(errorData.error ? errorData.error.message : 'خطای ناشناخته');
             }
 
+            const data = await response.json();
             resultDiv.innerText = data.candidates[0].content.parts[0].text;
 
         } catch (error) {
             statusDiv.style.display = 'block';
             statusDiv.innerText = "خطا: " + error.message;
-            resultDiv.innerText = 'خطایی رخ داد.';
+            resultDiv.innerText = '';
         }
     }
 </script>
-
 </body>
 </html>
