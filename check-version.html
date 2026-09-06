@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تستر نسخه کلید API گوگل</title>
+    <style>
+        body {
+            font-family: Tahoma, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+        h3 { margin-top: 0; color: #333; }
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            font-family: Tahoma, sans-serif;
+        }
+        button:hover { background-color: #45a049; }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 15px;
+            line-height: 2;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .loading { color: gray; }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            margin: 3px;
+            border-radius: 20px;
+            color: white;
+            font-size: 14px;
+        }
+        .yes { background-color: #4CAF50; }
+        .no { background-color: #f44336; }
+        .note {
+            font-size: 12px;
+            color: #888;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3>🔐 تستر نسخه کلید API گوگل</h3>
+        <input type="password" id="apiKey" placeholder="کلید API خود را وارد کن" autocomplete="off">
+        <button onclick="checkVersions()">بررسی نسخه‌ها</button>
+        <div id="result"></div>
+        <p class="note">⚠️ کلید شما هیچ‌جایی ذخیره نمی‌شود و با رفرش یا بستن صفحه، کاملاً پاک می‌شود.</p>
+    </div>
+
+    <script>
+        async function checkVersions() {
+            const key = document.getElementById('apiKey').value.trim();
+            const res = document.getElementById('result');
+
+            if (!key) {
+                res.innerHTML = '<span class="error">لطفاً اول کلید API را وارد کن!</span>';
+                return;
+            }
+
+            res.innerHTML = '<span class="loading">⏳ در حال بررسی نسخه‌ها...</span>';
+
+            const versions = ['v1', 'v1beta'];
+            let html = '';
+            let anyOk = false;
+
+            for (const v of versions) {
+                try {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/${v}/models?key=${key}`);
+                    if (response.ok) {
+                        anyOk = true;
+                        // شمردن مدل‌های موجود در این نسخه
+                        const data = await response.json();
+                        const count = (data.models || []).length;
+                        html += `<span class="badge yes">${v} ✔ سالم (${count} مدل)</span><br>`;
+                    } else {
+                        html += `<span class="badge no">${v} ✖ پشتیبانی نمی‌شود</span><br>`;
+                    }
+                } catch (e) {
+                    html += `<span class="badge no">${v} ✖ خطا در اتصال</span><br>`;
+                }
+            }
+
+            if (anyOk) {
+                html += '<br><span class="success">✅ کلید شما سالم است. از نسخه‌های سبز بالا استفاده کن.</span>';
+            } else {
+                html += '<br><span class="error">❌ کلید با هیچ نسخه‌ای کار نمی‌کند. کلید جدید بساز.</span>';
+            }
+
+            res.innerHTML = html;
+        }
+
+        // اطمینان از پاک شدن کلید هنگام رفرش صفحه
+        window.onload = function() {
+            document.getElementById('apiKey').value = '';
+            document.getElementById('result').innerHTML = '';
+        };
+    </script>
+</body>
+</html>
+
